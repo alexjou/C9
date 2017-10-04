@@ -1,0 +1,60 @@
+<%= form_for(@contato, html: { class: "dark-matter"}) do |f| %>
+  <% if @contato.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@contato.errors.count, "error") %> prohibited this contato from being saved:</h2>
+
+      <ul>
+      <% @contato.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+<h1>Contatos</h1>
+  <div class="field">
+    <%= f.label :nome %><br>
+    <%= f.text_field :nome %>
+  </div>
+  <div class="field">
+    <%= f.label :email %><br>
+    <%= f.text_field :email %>
+  </div>
+  <div class="field">
+    <%= f.label :tipo_id %><br>
+    <%= f.collection_select(:tipo_id, @tipo_options_for_select, :id, :descricao ) %>
+  </div>
+  
+  <%= f.fields_for :endereco do |endereco_fields| %>
+  <div class="field">
+    <%= endereco_fields.label :rua %><br>
+    <%= endereco_fields.text_field :rua %>
+  </div>
+  <div class="field">
+    <%= endereco_fields.label :cidade %><br>
+    <%= endereco_fields.text_field :cidade %>
+  </div>
+  <div class="field">
+    <%= endereco_fields.label :estado %><br>
+    <%= endereco_fields.select :estado, options_for_states(@contato.endereco.estado) %>
+  </div>
+   
+  <% end %>  
+  
+  <div id="telefones">
+      <%= f.fields_for :telefones do |telefones_fields| %>
+          <%= render partial: "telefone_fields", locals: { f: telefones_fields} %>
+      <% end %>
+      <%= link_to_add_association('[Adicionar Telefone]', f, :telefones) %>
+  </div>
+
+  <div class="field">
+    <%= f.label :obs %><br>
+    <%= f.text_area :obs %>
+  </div>
+  <div class="field">
+    <%= f.submit "Enviar", class:"button" %>
+    <%= link_to 'Back', contatos_path, class:"button" %>
+
+  </div>
+<% end %>
